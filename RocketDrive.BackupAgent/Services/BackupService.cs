@@ -137,9 +137,8 @@ namespace RocketDrive.BackupAgent.Services
                     catch (Exception ex)
                     {
                         errorCount++;
-                        Console.WriteLine($"❌ Failed to upload {fi.FullName}: {ex.Message}");
-                        Log.Error($"❌ Failed to upload {fi.FullName}: {ex.Message}");
                         var bodyf = $"Failed to upload {fi.FullName}: {ex.Message}";
+                        Log.Error(bodyf);
                         _notifier.Notify("Backup run failed", bodyf, false);
                     }
                 }
