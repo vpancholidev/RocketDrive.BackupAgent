@@ -1,0 +1,514 @@
+﻿<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>RocketDrive appsettings.json Builder</title>
+    <style>
+        :root {
+            --bg: #0b1220;
+            --panel: #121a2b;
+            --card: #1a2540;
+            --muted: #93a4c3;
+            --text: #e7eefc;
+            --accent: #4f8cff;
+            --good: #53d769;
+            --warn: #ffcc00;
+            --bad: #ff5b5b;
+            --radius: 16px;
+            --shadow: 0 10px 30px rgba(0,0,0,.35);
+        }
+
+        * {
+            box-sizing: border-box;
+            font-family: system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif
+        }
+
+        body {
+            margin: 0;
+            background: linear-gradient(180deg,#0b1220,#0f1630);
+            color: var(--text)
+        }
+
+        header {
+            padding: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            position: sticky;
+            top: 0;
+            background: linear-gradient(180deg,rgba(11,18,32,.9),rgba(11,18,32,.65));
+            backdrop-filter: blur(6px);
+            z-index: 10;
+            border-bottom: 1px solid rgba(255,255,255,.06)
+        }
+
+        .title {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 700
+        }
+
+        .chip {
+            padding: 4px 10px;
+            border-radius: 999px;
+            background: rgba(79,140,255,.15);
+            color: var(--accent);
+            font-size: 12px
+        }
+
+        main {
+            max-width: 1100px;
+            margin: 24px auto;
+            padding: 0 16px 80px
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(12,1fr);
+            gap: 16px
+        }
+
+        .card {
+            grid-column: span 12;
+            background: var(--card);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 18px;
+            border: 1px solid rgba(255,255,255,.06)
+        }
+
+        @media(min-width:900px) {
+            .left {
+                grid-column: span 7
+            }
+
+            .right {
+                grid-column: span 5
+            }
+        }
+
+        h2 {
+            margin: 6px 0 14px;
+            font-size: 18px
+        }
+
+        label {
+            font-size: 13px;
+            color: var(--muted);
+            display: block;
+            margin: 10px 0 6px
+        }
+
+        input[type=text], input[type=number], textarea, select {
+            width: 100%;
+            padding: 10px 12px;
+            border-radius: 12px;
+            background: #0f1830;
+            border: 1px solid #26406f;
+            color: var(--text);
+            outline: none
+        }
+
+        input[type=checkbox] {
+            transform: scale(1.15)
+        }
+
+        .row {
+            display: flex;
+            gap: 10px;
+            align-items: center
+        }
+
+        .small {
+            font-size: 12px;
+            color: var(--muted)
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            border: 1px solid transparent;
+            background: var(--accent);
+            color: white;
+            padding: 10px 14px;
+            border-radius: 12px;
+            cursor: pointer;
+            box-shadow: 0 6px 18px rgba(79,140,255,.35);
+            transition: .15s
+        }
+
+            .btn.secondary {
+                background: transparent;
+                border-color: #335a9a
+            }
+
+            .btn.danger {
+                background: var(--bad)
+            }
+
+            .btn:disabled {
+                opacity: .5;
+                cursor: not-allowed
+            }
+
+        .list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px
+        }
+
+        .pill {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #0e1730;
+            border: 1px solid #26406f;
+            border-radius: 999px;
+            padding: 8px 12px
+        }
+
+            .pill input {
+                background: transparent;
+                border: none;
+                outline: none;
+                color: var(--text);
+                width: 100%
+            }
+
+        pre {
+            white-space: pre-wrap;
+            background: #0e1730;
+            border: 1px solid #26406f;
+            border-radius: 12px;
+            padding: 12px;
+            max-height: 380px;
+            overflow: auto
+        }
+
+        .hint {
+            color: var(--muted);
+            font-size: 12px;
+            margin-top: 6px
+        }
+
+        footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(0deg,rgba(11,18,32,.95),rgba(11,18,32,.65));
+            backdrop-filter: blur(6px);
+            border-top: 1px solid rgba(255,255,255,.06);
+            padding: 10px 16px
+        }
+
+            footer .bar {
+                max-width: 1100px;
+                margin: 0 auto;
+                display: flex;
+                gap: 10px;
+                align-items: center;
+                justify-content: space-between
+            }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="title">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3 12a9 9 0 1 0 18 0A9 9 0 0 0 3 12Zm4.5 0A4.5 4.5 0 1 0 12 7.5 4.5 4.5 0 0 0 7.5 12Z" fill="#4f8cff" /></svg>
+            <div>
+                RocketDrive — appsettings.json Builder
+                <div class="small">Generate a config without touching JSON</div>
+            </div>
+        </div>
+        <span class="chip">Offline • Single file</span>
+    </header>
+
+    <main class="grid">
+        <section class="card left">
+            <h2>Backup Settings</h2>
+            <label>Target Drive Folder Name</label>
+            <input id="targetFolder" type="text" placeholder="RocketDriveUploads" value="RocketDriveUploads" />
+
+            <div class="row" style="gap:12px;margin-top:8px">
+                <div style="flex:1">
+                    <label>Allowed Extensions (comma or one per line)</label>
+                    <textarea id="exts" rows="3" placeholder=".zip,.bak,.7z"></textarea>
+                    <div class="hint">Example: <code>.zip,.bak</code> or each on new line.</div>
+                </div>
+                <div style="width:200px">
+                    <label>Overwrite Existing</label>
+                    <select id="overwrite">
+                        <option value="true">true</option>
+                        <option value="false">false</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="row" style="gap:12px">
+                <div style="width:230px">
+                    <label>Stabilize Seconds</label>
+                    <input id="stabilize" type="number" min="1" value="8" />
+                </div>
+                <div style="width:230px">
+                    <label>Upload Retry Count</label>
+                    <input id="retries" type="number" min="0" value="3" />
+                </div>
+                <div style="flex:1">
+                    <label>Create Daily Dated Subfolder</label>
+                    <select id="dated">
+                        <option value="true">true</option>
+                        <option value="false" selected>false</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="row" style="gap:12px">
+                <div style="flex:1">
+                    <label>Last Uploaded Timestamp File</label>
+                    <input id="lastFile" type="text" placeholder="last_uploaded.txt" value="last_uploaded.txt" />
+                </div>
+                <div style="flex:1">
+                    <label>Status File Path</label>
+                    <input id="statusFile" type="text" placeholder="logs\\status.json" value="logs\\status.json" />
+                </div>
+            </div>
+
+            <h2 style="margin-top:22px">Folders to Back Up</h2>
+            <div id="folders" class="list"></div>
+            <div class="row" style="margin-top:8px">
+                <button class="btn" onclick="addFolder()">+ Add Folder</button>
+                <button class="btn secondary" onclick="importExisting()">Import existing appsettings.json</button>
+            </div>
+            <div class="hint">Order doesn't matter. Subfolders are included automatically.</div>
+
+            <h2 style="margin-top:22px">Notifications</h2>
+            <div class="row" style="gap:12px">
+                <div class="card" style="background:#0f1830;border:1px solid #26406f;flex:1">
+                    <h3 style="margin:0 0 10px;font-size:14px;color:#cfe3ff">Telegram</h3>
+                    <label>Enabled</label>
+                    <select id="tgEnabled"><option>true</option><option selected>false</option></select>
+                    <label>Bot Token</label>
+                    <input id="tgToken" type="text" placeholder="123456789:ABCDEF..." />
+                    <label>Chat ID</label>
+                    <input id="tgChat" type="text" placeholder="123456789 or -100..." />
+                </div>
+                <div class="card" style="background:#0f1830;border:1px solid #26406f;flex:1">
+                    <h3 style="margin:0 0 10px;font-size:14px;color:#cfe3ff">Email (SMTP)</h3>
+                    <label>Enabled</label>
+                    <select id="smtpEnabled"><option>true</option><option selected>false</option></select>
+                    <label>Host</label><input id="smtpHost" type="text" placeholder="smtp.gmail.com" />
+                    <div class="row" style="gap:10px">
+                        <div style="flex:1"><label>Port</label><input id="smtpPort" type="number" value="587" /></div>
+                        <div style="flex:1"><label>Use SSL</label><select id="smtpSsl"><option>true</option><option selected>false</option></select></div>
+                    </div>
+                    <label>From</label><input id="smtpFrom" type="text" placeholder="you@example.com" />
+                    <label>To</label><input id="smtpTo" type="text" placeholder="you@example.com" />
+                    <label>Username</label><input id="smtpUser" type="text" placeholder="you@example.com" />
+                    <label>Password / App Password</label><input id="smtpPass" type="text" placeholder="••••••" />
+                </div>
+            </div>
+            <div class="row" style="gap:12px">
+                <div class="card" style="background:#0f1830;border:1px solid #26406f;flex:1">
+                    <h3 style="margin:0 0 10px;font-size:14px;color:#cfe3ff">Notify Rules</h3>
+                    <label>On Success</label><select id="notifySuccess"><option>true</option><option selected>false</option></select>
+                    <label>On Failure</label><select id="notifyFailure"><option selected>true</option><option>false</option></select>
+                </div>
+            </div>
+        </section>
+
+        <section class="card right">
+            <h2>Preview — appsettings.json</h2>
+            <pre id="preview">{}</pre>
+            <div class="row" style="gap:10px;margin-top:10px">
+                <button class="btn" onclick="downloadJson()">⬇ Download appsettings.json</button>
+                <button class="btn secondary" onclick="copyJson()">📋 Copy</button>
+                <button class="btn danger" onclick="resetAll()">Reset</button>
+            </div>
+            <div class="hint">Place this file next to <code>RocketDrive.BackupAgent.exe</code>. Keep your <code>credentials.json</code> and <code>token.json</code> in the same folder.</div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="bar">
+            <div class="small">Tip: extensions like <code>.zip,.bak</code> or one per line. Use the Import button to edit an existing config.</div>
+            <div class="row">
+                <span id="status" class="small"></span>
+            </div>
+        </div>
+    </footer>
+
+    <input id="fileOpen" type="file" accept="application/json" style="display:none" />
+
+    <script>
+        // ------- State & helpers -------
+        const foldersEl = document.getElementById('folders');
+        const previewEl = document.getElementById('preview');
+        const fileOpenEl = document.getElementById('fileOpen');
+
+        function addFolder(value = "") {
+            const wrap = document.createElement('div');
+            wrap.className = 'pill';
+            const inp = document.createElement('input');
+            inp.type = 'text';
+            inp.placeholder = 'C:\\Backups\\MyApp';
+            inp.value = value;
+            inp.oninput = render;
+            const btn = document.createElement('button');
+            btn.className = 'btn danger';
+            btn.textContent = 'Remove';
+            btn.onclick = () => { wrap.remove(); render(); };
+            wrap.appendChild(inp); wrap.appendChild(btn);
+            foldersEl.appendChild(wrap);
+            render();
+        }
+
+        function getFolders() {
+            return Array.from(foldersEl.querySelectorAll('input'))
+                .map(i => i.value.trim()).filter(Boolean);
+        }
+
+        function parseExts() {
+            const raw = document.getElementById('exts').value || '';
+            return raw.split(/[,\n]/).map(s => s.trim()).filter(Boolean);
+        }
+
+        function buildConfig() {
+            const cfg = {
+                BackupSettings: {
+                    Folders: getFolders(),
+                    AllowedExtensions: parseExts(),
+                    LastUploadedFileTimePath: document.getElementById('lastFile').value || 'last_uploaded.txt',
+                    TargetDriveFolderName: document.getElementById('targetFolder').value || 'RocketDriveUploads',
+                    OverwriteExisting: document.getElementById('overwrite').value === 'true',
+                    CreateDailyDatedSubfolder: document.getElementById('dated').value === 'true',
+                    StabilizeSeconds: Number(document.getElementById('stabilize').value || 8),
+                    UploadRetryCount: Number(document.getElementById('retries').value || 3),
+                    StatusFilePath: document.getElementById('statusFile').value || 'logs\\status.json',
+                    Notify: {
+                        OnSuccess: document.getElementById('notifySuccess').value === 'true',
+                        OnFailure: document.getElementById('notifyFailure').value === 'true'
+                    }
+                },
+                Telegram: {
+                    Enabled: document.getElementById('tgEnabled').value === 'true',
+                    BotToken: document.getElementById('tgToken').value || '',
+                    ChatId: document.getElementById('tgChat').value || ''
+                },
+                Smtp: {
+                    Enabled: document.getElementById('smtpEnabled').value === 'true',
+                    Host: document.getElementById('smtpHost').value || '',
+                    Port: Number(document.getElementById('smtpPort').value || 587),
+                    UseSsl: document.getElementById('smtpSsl').value === 'true'
+                        ? true : false,
+                    From: document.getElementById('smtpFrom').value || '',
+                    To: document.getElementById('smtpTo').value || '',
+                    Username: document.getElementById('smtpUser').value || '',
+                    Password: document.getElementById('smtpPass').value || ''
+                }
+            };
+            return cfg;
+        }
+
+        function render() {
+            const cfg = buildConfig();
+            previewEl.textContent = JSON.stringify(cfg, null, 2);
+            document.getElementById('status').textContent = `Folders: ${cfg.BackupSettings.Folders.length}`;
+        }
+
+        function downloadJson() {
+            const blob = new Blob([previewEl.textContent], { type: 'application/json' });
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = 'appsettings.json';
+            a.click();
+            URL.revokeObjectURL(a.href);
+        }
+
+        function copyJson() {
+            navigator.clipboard.writeText(previewEl.textContent).then(() => {
+                toast('Copied to clipboard');
+            });
+        }
+
+        function resetAll() {
+            foldersEl.innerHTML = ''; addFolder('C:\\Backups');
+            document.getElementById('exts').value = '';
+            document.getElementById('overwrite').value = 'true';
+            document.getElementById('dated').value = 'false';
+            document.getElementById('stabilize').value = 8;
+            document.getElementById('retries').value = 3;
+            document.getElementById('lastFile').value = 'last_uploaded.txt';
+            document.getElementById('statusFile').value = 'logs\\status.json';
+            document.getElementById('targetFolder').value = 'RocketDriveUploads';
+            document.getElementById('tgEnabled').value = 'false';
+            document.getElementById('smtpEnabled').value = 'false';
+            document.getElementById('tgToken').value = '';
+            document.getElementById('tgChat').value = '';
+            document.getElementById('smtpHost').value = '';
+            document.getElementById('smtpPort').value = 587;
+            document.getElementById('smtpSsl').value = 'false';
+            document.getElementById('smtpFrom').value = '';
+            document.getElementById('smtpTo').value = '';
+            document.getElementById('smtpUser').value = '';
+            document.getElementById('smtpPass').value = '';
+            render();
+        }
+
+        function importExisting() {
+            fileOpenEl.click();
+        }
+        fileOpenEl.addEventListener('change', async (e) => {
+            const file = e.target.files[0]; if (!file) return;
+            const text = await file.text();
+            try {
+                const cfg = JSON.parse(text);
+                // Basic hydrate
+                (cfg.BackupSettings?.Folders || []).forEach(addFolder);
+                if (cfg.BackupSettings?.AllowedExtensions) {
+                    const exts = Array.isArray(cfg.BackupSettings.AllowedExtensions) ? cfg.BackupSettings.AllowedExtensions.join('\n') : cfg.BackupSettings.AllowedExtensions;
+                    document.getElementById('exts').value = exts || '';
+                }
+                document.getElementById('lastFile').value = cfg.BackupSettings?.LastUploadedFileTimePath || 'last_uploaded.txt';
+                document.getElementById('targetFolder').value = cfg.BackupSettings?.TargetDriveFolderName || 'RocketDriveUploads';
+                document.getElementById('overwrite').value = String(cfg.BackupSettings?.OverwriteExisting ?? true);
+                document.getElementById('dated').value = String(cfg.BackupSettings?.CreateDailyDatedSubfolder ?? false);
+                document.getElementById('stabilize').value = cfg.BackupSettings?.StabilizeSeconds ?? 8;
+                document.getElementById('retries').value = cfg.BackupSettings?.UploadRetryCount ?? 3;
+                document.getElementById('statusFile').value = cfg.BackupSettings?.StatusFilePath || 'logs\\status.json';
+
+                document.getElementById('tgEnabled').value = String(cfg.Telegram?.Enabled ?? false);
+                document.getElementById('tgToken').value = cfg.Telegram?.BotToken || '';
+                document.getElementById('tgChat').value = cfg.Telegram?.ChatId || '';
+
+                document.getElementById('smtpEnabled').value = String(cfg.Smtp?.Enabled ?? false);
+                document.getElementById('smtpHost').value = cfg.Smtp?.Host || '';
+                document.getElementById('smtpPort').value = cfg.Smtp?.Port ?? 587;
+                document.getElementById('smtpSsl').value = String(cfg.Smtp?.UseSsl ?? false);
+                document.getElementById('smtpFrom').value = cfg.Smtp?.From || '';
+                document.getElementById('smtpTo').value = cfg.Smtp?.To || '';
+                document.getElementById('smtpUser').value = cfg.Smtp?.Username || '';
+                document.getElementById('smtpPass').value = cfg.Smtp?.Password || '';
+
+                render();
+                toast('Imported existing configuration');
+            } catch (err) {
+                toast('Invalid JSON file');
+            }
+        });
+
+        function toast(msg) {
+            const el = document.createElement('div');
+            el.textContent = msg; el.style.cssText = 'position:fixed;bottom:70px;right:16px;background:#1a2540;border:1px solid #335a9a;padding:10px 14px;border-radius:10px;box-shadow:var(--shadow);z-index:9999';
+            document.body.appendChild(el); setTimeout(() => el.remove(), 2200);
+        }
+
+        // init
+        addFolder('C:\\Backups');
+    </script>
+</body>
+</html>
